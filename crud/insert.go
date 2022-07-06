@@ -2,19 +2,21 @@ package crud
 
 import (
 	"context"
-	"fmt"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"kano-library/models"
 	"kano-library/mongo"
 	"kano-library/util"
 )
 
 //insert data to database
 
-func Insert(collection string, data interface{}) {
+func Insert(collection string, query models.Books) (string, error) {
 	ctx := context.Background()
 	db, err := mongo.Connect()
-	util.ErrorChecker(err)
+	util.ErrorHandler(err)
+	query.Id = primitive.NewObjectID()
+	_, err = db.Collection(collection).InsertOne(ctx, query)
+	util.ErrorHandler(err)
 
-	_, err = db.Collection(collection).InsertOne(ctx, data)
-	util.ErrorChecker(err)
-	fmt.Println("Inserted Successfully")
+	return "Insert success", err
 }

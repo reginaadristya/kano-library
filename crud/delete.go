@@ -2,22 +2,21 @@ package crud
 
 import (
 	"context"
-	"fmt"
-	"go.mongodb.org/mongo-driver/bson"
 	"kano-library/mongo"
 	"kano-library/util"
 )
 
 // delete data from database
 
-func Delete() {
+func DeleteOne(collection string, query map[string]interface{}) (string, error) {
+
 	ctx := context.Background()
 	db, err := mongo.Connect()
-	util.ErrorChecker(err)
+	util.ErrorHandler(err)
 
-	var selector = bson.M{"name": "Adventure of Us"}
-	_, err = db.Collection("books").DeleteOne(ctx, selector)
-	util.ErrorChecker(err)
+	_, err = db.Collection(collection).DeleteOne(ctx, query)
 
-	fmt.Println("Delete success!")
+	util.ErrorHandler(err)
+
+	return "Delete success", err
 }
